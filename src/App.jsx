@@ -267,7 +267,7 @@ function checkAnswer(userAnswer, correctAnswer) {
     return cWords.some(word => u.includes(word));
 }
 
-const BACKEND_URL = "http://localhost:3001";
+const BACKEND_URL = "https://multiaisystem2-backend.onrender.com";
 
 async function saveMessages(personalityId, messages) {
     try {
@@ -1651,7 +1651,6 @@ Recent chat: ${allMessages.slice(-6).map(m => m.role === "user" ? "User: " + m.c
                     className={"text-input" + (input.length > 0 ? " typing" : "")}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    style={{ "--personality-color": p.color }}
                     onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                             e.preventDefault();
