@@ -1547,7 +1547,6 @@ Recent chat: ${allMessages.slice(-6).map(m => m.role === "user" ? "User: " + m.c
     return (
         <div className="chat-screen" style={{
             background: p.bg,
-            "--personality-color": p.color,
         }}>
             <div className="chat-header" style={{ borderBottomColor: p.color + "44" }}>
                 <button className="back-btn" onClick={goBack}>←</button>
