@@ -428,7 +428,7 @@ async function callAI(messages, personality, extraContext, onChunk) {
         ? personality.system + instructions + "\n\n===CONTEXT===\n" + extraContext + "\n===END CONTEXT==="
         : personality.system + instructions;
     const allMessages = [{role: "system", content: systemWithContext}, ...messages.map(m => ({role: m.role, content: m.content}))];
-    const response = await fetch(BACKEND_URL + "/api/ai/stream", {
+    const response = await fetch(BACKEND_URL + "/api/ai", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({messages: allMessages, max_tokens: 90, temperature: 0.85}),
