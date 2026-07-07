@@ -423,12 +423,15 @@ async function fetchNews(topic) {
 }
 
 async function callAI(messages, personality, extraContext, onChunk) {
-    const instructions = "\n\nIMPORTANT: Keep every reply to 2-3 short lines max. Be punchy, casual, and stay true to your personality. If the user has mentioned their name earlier in the conversation, naturally use it occasionally. CRITICAL: For cricket scores, match results, or any specific sports statistics NEVER guess or make up numbers. If you dont have the exact data, say you dont have the full scorecard and suggest they check ESPNcricinfo or Cricbuzz for accurate scores.";
+    const instructions = "\n\nIMPORTANT: Keep every reply to 2-3 short lines max. Be punchy, casual, and stay true to your personality. If the user has mentioned their name earlier in the conversation, naturally use it occasionally.";
     const systemWithContext = extraContext
         ? personality.system + instructions + "\n\n===CONTEXT===\n" + extraContext + "\n===END CONTEXT==="
         : personality.system + instructions;
-    const allMessages = [{role: "system", content: systemWithContext}, ...messages.map(m => ({role: m.role, content: m.content}))];
-    const response = await fetch(BACKEND_URL + "/api/ai/stream", {
+    const allMessages = [
+        {role: "system", content: systemWithContext},
+        ...messages.map(m => ({role: m.role, content: m.content}))
+    ];
+    const response = await fetch(BACKEND_URL + "/api/ai", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({messages: allMessages, max_tokens: 90, temperature: 0.85}),
@@ -437,31 +440,10 @@ async function callAI(messages, personality, extraContext, onChunk) {
         const err = await response.json().catch(() => ({}));
         throw new Error(err?.error?.message || "API error");
     }
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let fullReply = "";
-    while (true) {
-        const {done, value} = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
-        for (const line of lines) {
-            if (line.startsWith("data: ")) {
-                const data = line.slice(6);
-                if (data === "[DONE]") break;
-                try {
-                    const parsed = JSON.parse(data);
-                    const token = parsed.choices?.[0]?.delta?.content || "";
-                    if (token) {
-                        fullReply += token;
-                        if (onChunk) onChunk(fullReply);
-                        await new Promise(resolve => setTimeout(resolve, 25));
-                    }
-                } catch {}
-            }
-        }
-    }
-    return fullReply;
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || "";
+    if (onChunk) onChunk(reply);
+    return reply;
 }
 
 const MOODS = {
