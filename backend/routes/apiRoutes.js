@@ -6,7 +6,6 @@ const CRICKET_KEY = process.env.CRICKET_API_KEY;
 const WEATHER_KEY = process.env.WEATHER_API_KEY;
 const NEWS_KEY = process.env.NEWS_API_KEY;
 
-// ── GROQ AI NON-STREAMING (for group coordinator) ────
 router.post("/ai", async (req, res) => {
     try {
         const { messages, max_tokens, temperature } = req.body;
@@ -20,7 +19,7 @@ router.post("/ai", async (req, res) => {
                 model: "llama-3.3-70b-versatile",
                 messages,
                 max_tokens: max_tokens || 90,
-                temperature: temperature || 0.7,
+                temperature: temperature || 0.85,
                 stream: false,
             }),
         });
@@ -31,45 +30,6 @@ router.post("/ai", async (req, res) => {
     }
 });
 
-// ── GROQ AI STREAMING (for regular chat) ─────────────
-router.post("/ai/stream", async (req, res) => {
-    try {
-        const { messages, max_tokens, temperature } = req.body;
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + GROQ_KEY,
-            },
-            body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
-                messages,
-                max_tokens: max_tokens || 90,
-                temperature: temperature || 0.85,
-                stream: true,
-            }),
-        });
-
-        res.setHeader("Content-Type", "text/event-stream");
-        res.setHeader("Cache-Control", "no-cache");
-        res.setHeader("Connection", "keep-alive");
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value);
-            res.write(chunk);
-        }
-        res.end();
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// ── CRICKET ──────────────────────────────────────────
 router.get("/cricket", async (req, res) => {
     try {
         const response = await fetch(
@@ -82,7 +42,6 @@ router.get("/cricket", async (req, res) => {
     }
 });
 
-// ── WEATHER ──────────────────────────────────────────
 router.get("/weather", async (req, res) => {
     try {
         const city = req.query.city || "Hyderabad";
@@ -96,7 +55,6 @@ router.get("/weather", async (req, res) => {
     }
 });
 
-// ── NEWS ─────────────────────────────────────────────
 router.get("/news", async (req, res) => {
     try {
         const query = req.query.q || "india";
