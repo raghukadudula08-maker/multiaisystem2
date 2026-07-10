@@ -19,7 +19,7 @@ router.post("/ai", async (req, res) => {
             body: JSON.stringify({
                 model: "llama-3.3-70b-versatile",
                 messages,
-                max_tokens: max_tokens || 20,
+                max_tokens: max_tokens || 90,
                 temperature: temperature || 0.7,
                 stream: false,
             }),
