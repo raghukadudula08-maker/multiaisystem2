@@ -30,6 +30,39 @@ router.post("/ai", async (req, res) => {
     }
 });
 
+router.post("/ai/stream", async (req, res) => {
+    try {
+        const { messages, max_tokens, temperature } = req.body;
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + GROQ_KEY,
+            },
+            body: JSON.stringify({
+                model: "llama-3.3-70b-versatile",
+                messages,
+                max_tokens: max_tokens || 90,
+                temperature: temperature || 0.85,
+                stream: true,
+            }),
+        });
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            res.write(decoder.decode(value));
+        }
+        res.end();
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.get("/cricket", async (req, res) => {
     try {
         const response = await fetch(
