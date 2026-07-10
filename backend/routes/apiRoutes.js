@@ -44,19 +44,16 @@ router.post("/ai/stream", async (req, res) => {
                 messages,
                 max_tokens: max_tokens || 90,
                 temperature: temperature || 0.85,
-                stream: true,
+                stream: false,
             }),
         });
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content || "";
         res.setHeader("Content-Type", "text/event-stream");
-        res.setHeader("Cache-Control", "no-cache");
-        res.setHeader("Connection", "keep-alive");
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            res.write(decoder.decode(value));
-        }
+        res.write("data: " + JSON.stringify({
+            choices: [{ delta: { content: content } }]
+        }) + "\n\n");
+        res.write("data: [DONE]\n\n");
         res.end();
     } catch (err) {
         res.status(500).json({ error: err.message });
