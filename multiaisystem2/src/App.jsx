@@ -516,14 +516,6 @@ function playSound(type) {
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
             osc.start(); osc.stop(ctx.currentTime + 0.2);
         }
-        else if (type === "fahh") {
-            osc.type = "sawtooth";
-            osc.frequency.setValueAtTime(300, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.4, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-            osc.start(); osc.stop(ctx.currentTime + 0.3);
-        }
         else if (type === "chime") {
             osc.type = "sine";
             osc.frequency.setValueAtTime(1000, ctx.currentTime);
@@ -782,12 +774,18 @@ export default function App() {
             });
             reply = finalReply;
             const aiMsg = { role: "assistant", content: reply, time: getTime() };
-            if (personality.id === "roaster") {
-                playSound("fahh"); // ← roaster gets fahh sound
+            const aiMsg = { role: "assistant", content: reply, time: getTime() };
+
+// Play fahh only for savage replies
+            const savagePersonalities = ["roaster", "savage", "chill"];
+            const replyLower = reply.toLowerCase();
+            const isSavageReply = replyLower.match(/bro|lol|bruh|tragic|cooked|pathetic|seriously|done|nah|😂|💀|😈/);
+
+            if (savagePersonalities.includes(personality.id) && isSavageReply) {
+                new Audio("/fahhh_KcgAXfs.mp3").play().catch(() => {});
             } else {
-                playSound("chime"); // ← all others get chime
+                playSound("chime");
             }
-            playSound("receive"); // ← everyone gets receive sound
 
             const updatedMessages = [...newMessages, aiMsg];
             setMessages(updatedMessages);
