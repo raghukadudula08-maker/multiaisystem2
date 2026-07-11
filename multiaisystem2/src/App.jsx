@@ -773,7 +773,7 @@ export default function App() {
                 });
             });
             reply = finalReply;
-            const aiMsg = { role: "assistant", content: reply, time: getTime() };
+
             const aiMsg = { role: "assistant", content: reply, time: getTime() };
 
 // Play fahh only for savage replies
