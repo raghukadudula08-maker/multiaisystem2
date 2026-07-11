@@ -494,6 +494,47 @@ const PERSONALITIES = [
 function getTime() {
     return new Date().toLocaleTimeString("en-IN", {hour: "2-digit", minute: "2-digit"});
 }
+function playSound(type) {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === "send") {
+            osc.frequency.setValueAtTime(600, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+            osc.start(); osc.stop(ctx.currentTime + 0.15);
+        }
+        else if (type === "receive") {
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+            osc.start(); osc.stop(ctx.currentTime + 0.2);
+        }
+        else if (type === "fahh") {
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(300, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.4, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.start(); osc.stop(ctx.currentTime + 0.3);
+        }
+        else if (type === "chime") {
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(1000, ctx.currentTime);
+            osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(1500, ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+            osc.start(); osc.stop(ctx.currentTime + 0.4);
+        }
+    } catch(e) {}
+}
 
 function getTodayDate() {
     return new Date().toLocaleDateString("en-IN", {weekday: "long", day: "numeric", month: "long", year: "numeric"});
@@ -612,6 +653,7 @@ export default function App() {
         setError("");
         const today = getTodayDate();
         const userMsg = {role: "user", content: text.trim(), time: getTime()};
+        playSound("send");
         const newMessages = [...messages, userMsg];
         setMessages(newMessages);
         saveMessages(personality.id, newMessages);
@@ -739,7 +781,14 @@ export default function App() {
                 });
             });
             reply = finalReply;
-            const aiMsg = {role: "assistant", content: reply, time: getTime()};
+            const aiMsg = { role: "assistant", content: reply, time: getTime() };
+            if (personality.id === "roaster") {
+                playSound("fahh"); // ← roaster gets fahh sound
+            } else {
+                playSound("chime"); // ← all others get chime
+            }
+            playSound("receive"); // ← everyone gets receive sound
+
             const updatedMessages = [...newMessages, aiMsg];
             setMessages(updatedMessages);
             saveMessages(personality.id, updatedMessages);
