@@ -1140,7 +1140,7 @@ function MessageBubble({msg, p}) {
                     </div>
                 </div>
                 {reaction && (
-                    <div style={{position: "absolute", bottom: "-10px", [isUser ? "left" : "right"]: "8px", background: "#1e1e1e", borderRadius: "12px", padding: "2px 6px", fontSize: "13px", border: "1px solid " + p.color + "55"}}>
+                    <div style={{position: "absolute", bottom: "-20px", [isUser ? "left" : "right"]: "8px", background: "#1e1e1e", borderRadius: "12px", padding: "2px 6px", fontSize: "13px", border: "1px solid " + p.color + "55"}}>
                         {reaction}
                     </div>
                 )}
