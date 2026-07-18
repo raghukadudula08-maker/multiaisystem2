@@ -595,7 +595,11 @@ export default function App() {
         const rec = new SR();
         rec.lang = "en-IN"; rec.continuous = true; rec.interimResults = false;
         rec.onstart = () => setListening(true);
-        rec.onresult = (e) => {setInput(e.results[0][0].transcript); setListening(false);};
+        rec.onresult = (e) => {
+            const newText = e.results[0][0].transcript;
+            setInput(prev => prev ? prev + " " + newText : newText);
+            setListening(false);
+        };
         rec.onerror = () => setListening(false);
         rec.onend = () => setListening(false);
         recognitionRef.current = rec;
