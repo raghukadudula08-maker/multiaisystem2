@@ -564,10 +564,10 @@ body {
 }
 
 .bubble {
-    max-width: 75%;
-    padding: 10px 15px;
+    max-width: 78%;
     font-family: var(--font-body);
-    font-size: 14.5px;
+    font-size: 13px;
+    padding:8px 12px;
     line-height: 1.6;
     word-break: break-word;
     position: relative;

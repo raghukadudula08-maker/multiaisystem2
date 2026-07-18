@@ -593,7 +593,7 @@ export default function App() {
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(prompt);
         const rec = new SR();
-        rec.lang = "en-IN"; rec.continuous = false; rec.interimResults = false;
+        rec.lang = "en-IN"; rec.continuous = true; rec.interimResults = false;
         rec.onstart = () => setListening(true);
         rec.onresult = (e) => {setInput(e.results[0][0].transcript); setListening(false);};
         rec.onerror = () => setListening(false);
