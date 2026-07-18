@@ -531,9 +531,11 @@ body {
 
 .bubble-row {
     display: flex;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     padding: 0 14px;
     animation: fadeUp 0.22s ease;
+    align-items:flex end;
+    gap:8px;
 }
 
 @keyframes fadeUp {
@@ -575,13 +577,13 @@ body {
 }
 
 .bubble.user {
-    border-radius: 20px 20px 5px 20px;
+    border-radius: 18px 18px 4px 18px;
     font-weight: 500;
     box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
 
 .bubble.ai {
-    border-radius: 20px 20px 20px 5px;
+    border-radius: 4px 18px 18px 18px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.2);
 }
 
