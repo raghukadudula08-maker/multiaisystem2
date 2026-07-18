@@ -554,6 +554,7 @@ export default function App() {
     const [groupMessages, setGroupMessages] = useState([]);
     const [groupLoading, setGroupLoading] = useState(false);
     const [groupTyping, setGroupTyping] = useState("");
+    const [serverWaking, setServerWaking] = useState(false);
     const bottomRef = useRef(null);
     const recognitionRef = useRef(null);
     const inputRef = useRef(null);
@@ -635,6 +636,8 @@ export default function App() {
         saveMessages(personality.id, newMessages);
         setInput("");
         setLoading(true);
+        setServerWaking(true);
+        const wakeTimer = setTimeout(() => setServerWaking(false), 30000);
         try {
             const intent = detectIntent(text);
             let extraContext = "";
@@ -783,6 +786,7 @@ export default function App() {
         } catch (e) {
             setError("Something went wrong 😅 — " + e.message);
         } finally {
+            setServerWaking(false);
             setLoading(false);
         }
     }, [messages, loading, personality, voiceEnabled, activeMode, quizActive, quizCategory, currentQuestion, quizScore, usedQuestions, waitingForCategory]);
@@ -1034,7 +1038,12 @@ export default function App() {
                     </div>
                 )}
                 {messages.map((m, i) => <MessageBubble key={i} msg={m} p={p}/>)}
-                {loading && <TypingIndicator p={p}/>}
+                {loading && serverWaking && (
+                    <div style={{textAlign:"center", padding:"20px", color: p.color, fontSize:"13px"}}>
+                        ⏳ Waking up server... first message may take 50 seconds!
+                    </div>
+                )}
+                {loading && !serverWaking && <TypingIndicator p={p}/>}
                 {error && <div className="error-msg">{error}</div>}
                 <div ref={bottomRef}/>
             </div>
