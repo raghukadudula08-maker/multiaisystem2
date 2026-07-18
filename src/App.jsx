@@ -767,8 +767,19 @@ export default function App() {
             if (voiceEnabled) {
                 setSpeaking(true);
                 const voices = window.speechSynthesis.getVoices();
-                const maleVoice = voices.find(v => v.name.includes("David")) || voices.find(v => v.name.includes("Mark")) || voices.find(v => v.lang === "en-US");
-                const femaleVoice = voices.find(v => v.name.includes("Zira")) || voices.find(v => v.name.includes("Susan")) || voices.find(v => v.name.toLowerCase().includes("female")) || voices.find(v => v.lang === "en-US");
+                const allVoices = window.speechSynthesis.getVoices();
+                const maleVoice = allVoices.find(v => v.name.includes("David")) ||
+                    allVoices.find(v => v.name.includes("Mark")) ||
+                    allVoices.find(v => v.name.includes("Google UK English Male")) ||
+                    allVoices.find(v => v.name.includes("Male")) ||
+                    allVoices.find(v => v.gender === "male") ||
+                    allVoices.find(v => v.lang === "en-US" && !v.name.toLowerCase().includes("female") && !v.name.toLowerCase().includes("zira") && !v.name.toLowerCase().includes("samantha"));
+
+                const femaleVoice = allVoices.find(v => v.name.includes("Zira")) ||
+                    allVoices.find(v => v.name.includes("Samantha")) ||
+                    allVoices.find(v => v.name.includes("Google UK English Female")) ||
+                    allVoices.find(v => v.name.toLowerCase().includes("female")) ||
+                    allVoices.find(v => v.lang === "en-US");
                 const voiceMap = {
                     roaster: {voice: maleVoice, pitch: 1.4, rate: 1.5},
                     chill: {voice: maleVoice, pitch: 0.8, rate: 0.75},
