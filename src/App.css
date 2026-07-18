@@ -567,7 +567,7 @@ body {
     max-width: 78%;
     font-family: var(--font-body);
     font-size: 13px;
-    padding:8px 12px;
+    padding:12px 16px;
     line-height: 1.6;
     word-break: break-word;
     position: relative;
