@@ -531,7 +531,7 @@ body {
 
 .bubble-row {
     display: flex;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     padding: 0 14px;
     animation: fadeUp 0.22s ease;
     align-items:flex end;
@@ -584,6 +584,8 @@ body {
 .bubble.ai {
     border-radius: 4px 18px 18px 18px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    text-align: left;
+    max-width: 75%;
 }
 
 .bubble-time {
