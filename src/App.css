@@ -531,7 +531,7 @@ body {
 
 .bubble-row {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     padding: 0 14px;
     animation: fadeUp 0.22s ease;
     align-items:flex end;
@@ -549,9 +549,8 @@ body {
     }
 }
 
-.bubble-row.user { justify-content: flex-end; }
-.bubble-row.ai { justify-content: flex-start; align-items: flex-end; }
-
+.bubble-row.user { justify-content: flex-end;margin-top: 8px}
+.bubble-row.ai { justify-content: flex-start; align-items: flex-end; margin-top:8px}
 .bubble-avatar {
     width: 34px;
     height: 34px;
